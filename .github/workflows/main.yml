@@ -60,10 +60,10 @@ EOF
         uses: betanzos/scp-upload@v1
         with:
           source: ./
-          host: ${{ secrets.host }}
+          host: ${{ secrets.HOST }}
           port: '22'
-          username: ${{ secrets.username }}
-          key: ${{ secrets.key }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
           remote_dir: '~'
 
   setup-job:
@@ -72,9 +72,9 @@ EOF
       - name: Exec cmd on remote server
         uses: Comori/ssh@v0.0.1
         with:
-          host: ${{ secrets.host }}
-          username: ${{ secrets.username }}
-          key: ${{ secrets.key }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
           script: |
             chmod 777 docker-setup.sh
             ./docker-setup.sh
