@@ -1,0 +1,57 @@
+name: deployment pipeline
+on: 
+  workflow_dispatch:
+    inputs:
+      image_name: 
+        description: docker_image to create 
+        required: true
+      user_name: 
+        description: user_name for naming container
+        required: true
+      HOST:
+        description: ip of instnace to login
+        required: true
+jobs:
+  first_job: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: copying code 
+        uses: actions/checkout@v4
+      - name: source copying files
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ inputs.HOST }}
+          username:  ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          source: .
+          target: /home/ubuntu/
+  setup-job:
+    runs-on: ubuntu-latest
+    needs: first_job
+    steps:
+      - name: Exec cmd on remote server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ inputs.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd ~
+            chmod +x docker-setup.sh
+            ./docker-setup.sh
+  login-job:
+    runs-on: ubuntu-latest
+    needs: setup-job
+    steps:
+      - name: Exec cmd on remote server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ inputs.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd ~
+            docker run -dp 80:80 --name ${{ inputs.user_name }} ${{ inputs.image_name }}
+            docker run -p 9090:9090 prom/prometheus
+            docker run -d -p 3000:3000 --name=grafana grafana/grafana-enterprise
+      
