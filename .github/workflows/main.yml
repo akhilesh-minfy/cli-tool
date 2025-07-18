@@ -56,7 +56,6 @@ jobs:
             ports:
               - port: 80
                 targetPort: 80
-                nodePort: 30007
           EOF
 
       - name: copying script to instance
@@ -82,6 +81,19 @@ jobs:
             cd ~
             chmod +x docker-setup.sh
             ./docker-setup.sh
+
+  login-job:
+    runs-on: ubuntu-latest
+    needs: setup-job
+    steps:
+      - name: Exec cmd on remote server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd ~
             minikube start
             kubectl apply -f deployment.yml
             kubectl apply -f service.yml
