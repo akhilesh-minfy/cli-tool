@@ -52,6 +52,6 @@ jobs:
           script: |
             cd ~
             docker run -dp 80:80 --name ${{ inputs.user_name }} ${{ inputs.image_name }}
-            docker run -p 9090:9090 prom/prometheus
-            docker run -d -p 3000:3000 --name=grafana grafana/grafana-enterprise
+            docker run -dp 9090:9090 prom/prometheus
+            docker run -d -p 3000:3000 --name=grafana grafana/grafana
       
