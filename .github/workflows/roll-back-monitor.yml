@@ -49,15 +49,17 @@ jobs:
           host: ${{ inputs.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
+          timeout: 120s
           script: |
             cd ~
             
             # Stop and remove existing containers
-            docker stop $(docker ps -aq) || true
-            docker rm $(docker ps -aq) || true
+            docker stop prometheus grafana ${{ inputs.user_name }} || true
+            docker rm prometheus grafana ${{ inputs.user_name }} || true
             
             # Kill existing node_exporter process
             pkill -f node_exporter || true
+            sleep 2
             
             # Clean up old files
             rm -f prometheus.yml
@@ -67,10 +69,9 @@ jobs:
             wget -q https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
             tar xf node_exporter-1.6.1.linux-amd64.tar.gz
             nohup ./node_exporter-1.6.1.linux-amd64/node_exporter --web.listen-address=":9100" > /dev/null 2>&1 &
-            disown
             
             # Create simple Prometheus config
-            cat > prometheus.yml << EOF
+            cat > prometheus.yml << 'EOF'
             global:
               scrape_interval: 15s
             
