@@ -65,7 +65,7 @@ jobs:
             scrape_configs:
               - job_name: 'prometheus'
                 static_configs:
-                  - targets: ['${{ inputs.HOST }}:9090']
+                  - targets: ['localhost:9090']
               
               - job_name: 'system'
                 static_configs:
