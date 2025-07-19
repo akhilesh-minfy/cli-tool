@@ -1,4 +1,4 @@
-name: deployment pipeline
+name: roll-back-monitor pipeline
 on: 
   workflow_dispatch:
     inputs:
