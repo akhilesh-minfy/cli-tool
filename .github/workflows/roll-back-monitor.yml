@@ -48,7 +48,7 @@ jobs:
           host: ${{ inputs.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          timeout: 120s
+          timeout: 1800s
           script: |
             cd ~
             
