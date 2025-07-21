@@ -33,9 +33,9 @@ import boto3
 def get_instance_ip_by_name(instance_name):
     AWS_REGION = "ap-south-1"
     ec2_client = boto3.client("ec2", region_name=AWS_REGION,
-        #  aws_access_key_id="",
-        #  aws_secret_access_key="",
-        #  aws_session_token=""
+          aws_access_key_id="",
+          aws_secret_access_key="",
+          aws_session_token=""
          )
     try:
         response = ec2_client.describe_instances(
