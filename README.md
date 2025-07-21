@@ -32,7 +32,8 @@ A command-line deployment tool that automates the process of cloning, building, 
 3. Ensure you have an EC2 key pair created in `ap-south-1` region replace that in `terraform/main.tf` and add it github secrets for pipeline execution
 
 ### Environment Setup
-1. **AWS Credentials**: Update the hardcoded credentials in:
+1. **AWS Credentials**:  uncomment the credentials in `cmd/deploy/` and Update the hardcoded credentials in:
+   - `cmd/deploy/deployment.py`
    - `cmd/deploy/infra.py`
    - `cmd/deploy/s3push.py`
    
