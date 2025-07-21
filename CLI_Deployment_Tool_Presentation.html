@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Deployment Tool - One-Command Cloud Deployments</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100vh;
+            padding: 60px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #2c5aa0;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2c5aa0;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a90a4;
+            margin-bottom: 20px;
+        }
+
+        .slide p {
+            font-size: 1.4em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #555;
+            max-width: 800px;
+        }
+
+        .tagline {
+            font-size: 1.8em;
+            color: #4a90a4;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+
+        .presenter {
+            font-size: 1.3em;
+            color: #666;
+            margin-top: 40px;
+        }
+
+        .hero-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .hero-bg h1, .hero-bg .tagline, .hero-bg .presenter {
+            color: white;
+        }
+
+        .stats {
+            font-size: 2.5em;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        .pillars {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .pillar {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .pillar h4 {
+            font-size: 1.8em;
+            color: #2c5aa0;
+            margin-bottom: 15px;
+        }
+
+        .meme {
+            background: #f0f8ff;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            border-left: 5px solid #4a90a4;
+        }
+
+        .meme-text {
+            font-size: 1.6em;
+            color: #2c5aa0;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .meme-caption {
+            font-size: 1.2em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .flow-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 40px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .flow-step {
+            background: #4a90a4;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #4a90a4;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .benefit {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .benefit h4 {
+            font-size: 1.6em;
+            color: #2c5aa0;
+            margin-bottom: 15px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: #2c5aa0;
+            color: white;
+            padding: 20px;
+            font-size: 1.3em;
+        }
+
+        .comparison-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .check {
+            color: #27ae60;
+            font-size: 1.5em;
+        }
+
+        .cross {
+            color: #e74c3c;
+            font-size: 1.5em;
+        }
+
+        .warning {
+            color: #f39c12;
+            font-size: 1.5em;
+        }
+
+        .architecture {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            width: 100%;
+        }
+
+        .code-snippet {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 30px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: left;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .timeline-item {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 15px;
+        }
+
+        .timeline-item h4 {
+            font-size: 1.6em;
+            color: #2c5aa0;
+            margin-bottom: 15px;
+        }
+
+        .funding-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .funding-item {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .funding-amount {
+            font-size: 2.2em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #4a90a4;
+            transform: translateY(-2px);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(44, 90, 160, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            z-index: 1000;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .contact-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 15px;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / 15
+        </div>
+
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active hero-bg">
+            <h1>CLI Deployment Tool</h1>
+            <p class="tagline">"One-Command Cloud Deployments for Front-End Teams"</p>
+            <div class="emoji">🚀💻☁️</div>
+            <p class="presenter">Presenter: Senior Product Developer</p>
+        </div>
+
+        <!-- Slide 2: The "Why?" & Target Audience -->
+        <div class="slide">
+            <h2>Why It Matters</h2>
+            <p>Student and indie dev teams struggle turning side-projects into live, monitored applications</p>
+            <div class="stats">78% of CS grads deploy ≤3 personal projects live</div>
+            <div class="pillars">
+                <div class="pillar">
+                    <div class="emoji">🎓</div>
+                    <h4>Computer Science Students</h4>
+                    <p>Need simple deployment for coursework & portfolios</p>
+                </div>
+                <div class="pillar">
+                    <div class="emoji">⚡</div>
+                    <h4>Hackathon Teams</h4>
+                    <p>Fast deployment under time pressure</p>
+                </div>
+                <div class="pillar">
+                    <div class="emoji">💡</div>
+                    <h4>Indie Developers</h4>
+                    <p>Cost-effective scaling solutions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Vision Slide -->
+        <div class="slide">
+            <h2>Vision: From Laptop to Production in &lt;5 min</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <div class="emoji">⚡</div>
+                    <h4>Simplicity</h4>
+                    <p>One command deploys everything</p>
+                </div>
+                <div class="pillar">
+                    <div class="emoji">💰</div>
+                    <h4>Affordability</h4>
+                    <p>AWS free tier compatible</p>
+                </div>
+                <div class="pillar">
+                    <div class="emoji">📊</div>
+                    <h4>Observability</h4>
+                    <p>Built-in monitoring stack</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: MEME -->
+        <div class="slide">
+            <div class="meme">
+                <div class="meme-text">MEME: When you finally SSH into prod and nothing works</div>
+                <div class="emoji">😭🔥</div>
+                <div class="meme-caption">"This is fine" - Every developer ever</div>
+            </div>
+            <p style="font-size: 2em; color: #2c5aa0; font-weight: bold;">Our tool eliminates this pain!</p>
+        </div>
+
+        <!-- Slide 5: Product Demo Flow -->
+        <div class="slide">
+            <h2>Product Demo Flow</h2>
+            <div class="flow-diagram">
+                <div class="flow-step">Code</div>
+                <div class="arrow">→</div>
+                <div class="flow-step">deploy-tool init</div>
+                <div class="arrow">→</div>
+                <div class="flow-step">S3 artifact</div>
+                <div class="arrow">→</div>
+                <div class="flow-step">Docker image</div>
+                <div class="arrow">→</div>
+                <div class="flow-step">Terraform apply</div>
+                <div class="arrow">→</div>
+                <div class="flow-step">EC2</div>
+                <div class="arrow">→</div>
+                <div class="flow-step">Monitoring URLs</div>
+            </div>
+            <p>Complete automation from repository to production-ready application</p>
+        </div>
+
+        <!-- Slide 6: Key Business Benefits -->
+        <div class="slide">
+            <h2>Key Business Benefits</h2>
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <div class="emoji">⚡</div>
+                    <h4>90% Faster Deployments</h4>
+                    <p>From hours to minutes with automated workflows</p>
+                </div>
+                <div class="benefit">
+                    <div class="emoji">🔓</div>
+                    <h4>Zero Vendor Lock-in</h4>
+                    <p>Runs on any AWS account you control</p>
+                </div>
+                <div class="benefit">
+                    <div class="emoji">📊</div>
+                    <h4>Built-in Dashboards</h4>
+                    <p>Prometheus + Grafana = faster insights</p>
+                </div>
+                <div class="benefit">
+                    <div class="emoji">😊</div>
+                    <h4>Happier Users</h4>
+                    <p>Reliable deployments = better user experience</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Revenue / Adoption Model -->
+        <div class="slide">
+            <h2>Revenue / Adoption Model</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <div class="emoji">🆓</div>
+                    <h4>OSS Core</h4>
+                    <p>Free single-service deployments</p>
+                </div>
+                <div class="pillar">
+                    <div class="emoji">💎</div>
+                    <h4>Pro Pack</h4>
+                    <p>Multi-service deploys & secret vault</p>
+                </div>
+                <div class="pillar">
+                    <div class="emoji">🎓</div>
+                    <h4>University Upsell</h4>
+                    <p>DevOps curriculum add-on</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Competitive Landscape -->
+        <div class="slide">
+            <h2>Competitive Landscape</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>CLI Deployment Tool</th>
+                        <th>Render</th>
+                        <th>Vercel</th>
+                        <th>Netlify</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Full AWS Control</strong></td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Terraform Infrastructure Code</strong></td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td><strong>One-Command Rollback</strong></td>
+                        <td class="check">✅</td>
+                        <td class="warning">⚠️</td>
+                        <td class="check">✅</td>
+                        <td class="warning">⚠️</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Slide 9: Technical Architecture Deep Dive -->
+        <div class="slide">
+            <h2>Technical Architecture Deep Dive</h2>
+            <div class="architecture">
+                <h3>Layered Architecture</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">GitPython</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">Build (Node, Vite)</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">Docker Hub Push</div>
+                </div>
+                <div style="margin: 20px 0;">⬇️</div>
+                <div class="flow-diagram">
+                    <div class="flow-step">Terraform Modules</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">EC2 Instance</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">Docker Compose Stack</div>
+                </div>
+                <p style="margin-top: 20px;"><strong>Monitoring Stack:</strong> App + Prometheus + Grafana + Node Exporter + Blackbox Exporter</p>
+                <p><strong>Security:</strong> Auto-configured security groups with public URL output</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Code Snippet Showcase -->
+        <div class="slide">
+            <h2>Code Snippet Showcase</h2>
+            <div class="code-snippet">
+# Key Terraform Infrastructure Call
+def create_infra(repo_name):
+    try:
+        subprocess.check_call('terraform init', shell=True, 
+                            cwd=os.path.join(os.getcwd(), "terraform"))
+        subprocess.check_call('terraform apply --auto-approve', shell=True,
+                            cwd=os.path.join(os.getcwd(), "terraform"))
+        return get_instance_ip_by_name("my-instance")
+    except subprocess.CalledProcessError as e:
+        print("Error creating infrastructure:", e)
+            </div>
+            <p>Simple Python wrapper orchestrates complex infrastructure deployment</p>
+        </div>
+
+        <!-- Slide 11: Monitoring Stack Explained -->
+        <div class="slide">
+            <h2>Monitoring Stack Explained</h2>
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <div class="emoji">📊</div>
+                    <h4>Prometheus (Port 9090)</h4>
+                    <p>Scrapes app metrics & system health</p>
+                </div>
+                <div class="benefit">
+                    <div class="emoji">📈</div>
+                    <h4>Grafana (Port 3000)</h4>
+                    <p>Beautiful dashboards (admin/admin)</p>
+                </div>
+                <div class="benefit">
+                    <div class="emoji">🖥️</div>
+                    <h4>Node Exporter (Port 9100)</h4>
+                    <p>System-level metrics collection</p>
+                </div>
+                <div class="benefit">
+                    <div class="emoji">🏥</div>
+                    <h4>Blackbox Exporter (Port 9115)</h4>
+                    <p>Application health checks</p>
+                </div>
+            </div>
+            <div class="meme">
+                <div class="meme-text">MEME: When Grafana hits 100% uptime and you screenshot it like 🤳</div>
+                <div class="meme-caption">"Look at my beautiful green dashboards!"</div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Risk & Mitigation -->
+        <div class="slide">
+            <h2>Risk & Mitigation</h2>
+            <div class="benefits-grid">
+                <div class="benefit" style="border-left: 5px solid #e74c3c;">
+                    <h4>⚠️ Current Drawbacks</h4>
+                    <p>• Hard-coded credentials in demo<br>
+                    • AWS costs after free tier<br>
+                    • Requires Docker daemon running</p>
+                </div>
+                <div class="benefit" style="border-left: 5px solid #27ae60;">
+                    <h4>✅ Mitigation Roadmap</h4>
+                    <p>• AWS IAM roles & secret manager<br>
+                    • Cost alerts & optimization<br>
+                    • Container-native build kit</p>
+                </div>
+            </div>
+            <p style="margin-top: 30px; font-size: 1.2em; color: #2c5aa0;">
+                <strong>Security-first approach in production version</strong>
+            </p>
+        </div>
+
+        <!-- Slide 13: Go-to-Market Timeline -->
+        <div class="slide">
+            <h2>Go-to-Market Timeline</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Q1 2024</h4>
+                    <div class="emoji">🎓</div>
+                    <p>Beta rollout at 3 universities<br>
+                    Student feedback integration</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Q2 2024</h4>
+                    <div class="emoji">🚀</div>
+                    <p>GitHub Marketplace launch<br>
+                    Community building</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Q3 2024</h4>
+                    <div class="emoji">💎</div>
+                    <p>Pro Pack SaaS launch<br>
+                    Enterprise features</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Funding Ask -->
+        <div class="slide">
+            <h2>Funding Ask</h2>
+            <div class="funding-stats">
+                <div class="funding-item">
+                    <div class="funding-amount">$300K</div>
+                    <h4>Pre-Seed Round</h4>
+                    <p>18-month runway</p>
+                </div>
+                <div class="funding-item">
+                    <div class="funding-amount">$1.2M</div>
+                    <h4>Expected ARR</h4>
+                    <p>By Year 3</p>
+                </div>
+                <div class="funding-item">
+                    <div class="funding-amount">50%</div>
+                    <h4>Engineering</h4>
+                    <p>Core development team</p>
+                </div>
+            </div>
+            <div class="benefits-grid" style="margin-top: 40px;">
+                <div class="benefit">
+                    <h4>30% Community Building</h4>
+                    <p>Developer relations & university partnerships</p>
+                </div>
+                <div class="benefit">
+                    <h4>20% Infrastructure Credits</h4>
+                    <p>AWS costs & development environments</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Closing & Call to Action -->
+        <div class="slide hero-bg">
+            <h1>It Just Works 🚀</h1>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="emoji">📁</div>
+                    <h4>GitHub Repo</h4>
+                    <p>github.com/your-org/cli-deployment-tool</p>
+                </div>
+                <div class="contact-item">
+                    <div class="emoji">🎥</div>
+                    <h4>Demo Video</h4>
+                    <p>Watch 5-minute deployment</p>
+                </div>
+                <div class="contact-item">
+                    <div class="emoji">📧</div>
+                    <h4>Contact</h4>
+                    <p>hello@cli-deploy.dev</p>
+                </div>
+            </div>
+            <div class="meme" style="background: rgba(255,255,255,0.1); border-left: 5px solid white;">
+                <div class="meme-text" style="color: white;">MEME: "Invest now, thank us later" 🥂</div>
+                <div class="meme-caption" style="color: #f0f8ff;">Leonardo DiCaprio toast vibes</div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" onclick="previousSlide()">← Previous</button>
+            <button class="nav-btn" onclick="nextSlide()">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[n].classList.add('active');
+            document.getElementById('current-slide').textContent = n + 1;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Auto-advance slides every 30 seconds (optional)
+        // setInterval(nextSlide, 30000);
+    </script>
+</body>
+</html>
