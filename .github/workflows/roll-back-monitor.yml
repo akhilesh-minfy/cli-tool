@@ -52,8 +52,9 @@ jobs:
           script: |
             cd ~
             
-            docker stop $(docker ps -q) 2>/dev/null || true
-            docker rm $(docker ps -aq) 2>/dev/null || true
+            docker stop ${{ inputs.user_name }} 2>/dev/null || true
+            docker rm ${{ inputs.user_name }} 2>/dev/null || true
+            docker image prune -a -f
             
             # # Kill existing node_exporter process
             # pkill -f node_exporter || true
@@ -88,7 +89,7 @@ jobs:
             #     metrics_path: '/metrics'
             # EOF
             docker run -dp 80:80 --name ${{ inputs.user_name }} ${{ inputs.image_name }}
-            docker run -d -p 9090:9090 --name prometheus \
-              -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
-              prom/prometheus
-            docker run -d -p 3000:3000 --name grafana grafana/grafana
+            # docker run -d -p 9090:9090 --name prometheus \
+            #   -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
+            #   prom/prometheus
+            # docker run -d -p 3000:3000 --name grafana grafana/grafana
