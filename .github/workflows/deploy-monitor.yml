@@ -1,3 +1,4 @@
+
 name: deployment pipeline
 on: 
   workflow_dispatch:
@@ -57,6 +58,19 @@ jobs:
             tar xf node_exporter-1.6.1.linux-amd64.tar.gz
             nohup ./node_exporter-1.6.1.linux-amd64/node_exporter --web.listen-address=":9100" > /dev/null 2>&1 &
             
+            cat > blackbox.yml << 'EOF'
+            modules:
+              http_2xx:
+                prober: http
+                timeout: 5s
+              tcp_connect:
+                prober: tcp
+                timeout: 5s
+              icmp:
+                prober: icmp
+                timeout: 5s
+            EOF
+            
             # Create simple Prometheus config
             cat > prometheus.yml << EOF
             global:
@@ -75,8 +89,27 @@ jobs:
                 static_configs:
                   - targets: ['${{ inputs.HOST }}:80']
                 metrics_path: '/metrics'
+
+              - job_name: 'blackbox'
+                metrics_path: /probe
+                params:
+                  module: [http_2xx]
+                static_configs:
+                  - targets: [ '${{ inputs.HOST }}:80' ]
+                relabel_configs:
+                  - source_labels: [__address__]
+                    target_label: __param_target
+                  - source_labels: [__param_target]
+                    target_label: instance
+                  - target_label: __address__
+                    replacement: localhost:9115
             EOF
-            docker run -dp 80:80 --name ${{ inputs.user_name }} ${{ inputs.image_name }}
+            
+            docker run -d -p 80:80 --name ${{ inputs.user_name }} ${{ inputs.image_name }}
+            docker run -d -p 9115:9115 --name blackbox_exporter \
+              -v $(pwd)/blackbox.yml:/config/blackbox.yml \
+              prom/blackbox-exporter:latest \
+              --config.file=/config/blackbox.yml
             docker run -d -p 9090:9090 --name prometheus \
               -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
               prom/prometheus
