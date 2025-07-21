@@ -95,14 +95,14 @@ jobs:
                 params:
                   module: [http_2xx]
                 static_configs:
-                  - targets: [ '${{ inputs.HOST }}:80' ]
+                  - targets: [ 'http://${{ inputs.HOST }}:80' ]
                 relabel_configs:
                   - source_labels: [__address__]
                     target_label: __param_target
                   - source_labels: [__param_target]
                     target_label: instance
                   - target_label: __address__
-                    replacement: localhost:9115
+                    replacement: ${{ inputs.HOST }}:9115 
             EOF
             
             docker run -d -p 80:80 --name ${{ inputs.user_name }} ${{ inputs.image_name }}
