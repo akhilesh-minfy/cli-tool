@@ -3,9 +3,10 @@ import os
 
 def s3_store(app_path, app_type,repo_name):
     client = boto3.client('s3',
-         aws_access_key_id="",
-         aws_secret_access_key="",
-         aws_session_token="")
+        #  aws_access_key_id="",
+        #  aws_secret_access_key="",
+        #  aws_session_token=""
+        )
         
     upload_file_bucket = 'cli-tool-s3-123'
     if app_type == "next":

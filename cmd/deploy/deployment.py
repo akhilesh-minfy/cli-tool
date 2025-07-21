@@ -2,7 +2,7 @@ import requests
 
 # ----------- Configuration ------------
 def trigger_workflow(image,public_ip,workflow_file_name):
-    GITHUB_TOKEN = ""  # Replace with your personal access token
+   # GITHUB_TOKEN = ""  # Replace with your personal access token
     REPO_OWNER = "akhilesh-minfy"
     REPO_NAME = "cli-tool"
     WORKFLOW_FILE_NAME = workflow_file_name  # or .github/workflows/main.yml
